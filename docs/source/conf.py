@@ -20,7 +20,7 @@ sys.path.insert(0, os.path.abspath('../..'))
 import espatools
 # Automatically generate documentation pages
 from gendocs import Generator
-Generator.DocumentPackages(espatools)
+Generator.DocumentPackages(espatools, index_base='../index_base.rst')
 
 
 # -- Project information -----------------------------------------------------
@@ -175,7 +175,9 @@ texinfo_documents = [
 # -- Options for intersphinx extension ---------------------------------------
 
 # Example configuration for intersphinx: refer to the Python standard library.
-intersphinx_mapping = {'https://docs.python.org/': None}
+intersphinx_mapping = {'https://docs.python.org/': None,
+                       'http://docs.scipy.org/doc/numpy/': None,
+                       'http://propertiespy.readthedocs.io/en/latest/': None}
 
 # -- Options for todo extension ----------------------------------------------
 
