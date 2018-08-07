@@ -4,7 +4,11 @@
 
 An open-source Python package for simple loading of Landsat imagery as NumPy arrays. [Learn more about the API](https://espatools.readthedocs.io/en/latest/)
 
-## Install
+## Connections
+
+The package heavily uses [properties](http://propertiespy.readthedocs.io/en/latest/) for the creation of strongly typed objects in a consistent, declarative way.
+
+# Getting Started
 
 `espatools` is available from [PyPI](https://pypi.org/project/espatools/):
 

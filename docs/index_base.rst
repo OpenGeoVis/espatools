@@ -26,8 +26,15 @@ the backend of the features they are using.
 .. _GitHub: https://github.com/OpenGeoVis/espatools/
 .. _PyPI: https://pypi.org/project/espatools/
 
-Install
--------
+Connections
+-----------
+
+The package heavily uses `properties`_ for the creation of strongly typed objects in a consistent, declarative way.
+
+.. _properties: http://propertiespy.readthedocs.io/en/latest/
+
+Getting Started
+---------------
 
 ``espatools`` is available from `PyPI`_
 
@@ -39,7 +46,7 @@ Install
 
 
 Usage
------
+^^^^^
 
 We think `espatools` is easy to use; give it a try and let us know what you think as this is just the beta-release! See `this Jupyter Notebook`_ for a demonstration of some simple plotting after reading Landsat imagery.
 
