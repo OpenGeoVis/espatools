@@ -14,7 +14,7 @@ $ pip install espatools
 
 ## Usage
 
-We think `espatools` is easy to use; give it a try and let us know what you think!
+We think `espatools` is easy to use; give it a try and let us know what you think as this is just the beta-release!
 
 See [this Jupyter Notebook](https://github.com/OpenGeoVis/espatools/blob/master/Example.ipynb) for a demonstration of some simple plotting after reading Landsat imagery.
 
