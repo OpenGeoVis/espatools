@@ -7,7 +7,7 @@ An open-source Python package for simple loading of Landsat imagery as NumPy arr
 `espatools` is available from [PyPI]():
 
 ```bash
-$ pip Install espatools
+$ pip install espatools
 ```
 
 ## Usage
