@@ -1,10 +1,53 @@
+__all__ = [
+    'SetProperties',
+    'RasterSetReader',
+]
+
 import xmltodict
 import numpy as np
 from PIL import Image
 import os
 import collections
+import properties
 
-from .obj import RasterSet, Band, SetProperties
+from .raster import RasterSet, Band
+
+
+def SetProperties(has_props_cls, input_dict, include_immutable=True):
+    """A helper method to set an ``HasProperties`` object's properties from a dictionary"""
+    props = has_props_cls()
+    if not isinstance(input_dict, (dict, collections.OrderedDict)):
+        raise RuntimeError('input_dict invalid: ', input_dict)
+    for k, v in iter(input_dict.items()):
+        if (k in has_props_cls._props and (
+                include_immutable or
+                any(hasattr(has_props_cls._props[k], att) for att in ('required', 'new_name'))
+                )
+           ):
+            p = props._props.get(k)
+            if isinstance(p, properties.HasProperties):
+                props._set(k, SetProperties(p, v, include_immutable=include_immutable))
+            elif isinstance(p, properties.Instance):
+                props._set(k, SetProperties(p.instance_class, v, include_immutable=include_immutable))
+            elif isinstance(p, properties.List):
+                if not isinstance(v, list):
+                    raise RuntimeError('property value mismatch', p, v)
+                if not isinstance(v[0], properties.HasProperties):
+                    prop = p.prop.instance_class
+                    newlist = []
+                    for i in v:
+                        value = SetProperties(prop, i, include_immutable=include_immutable)
+                        newlist.append(value)
+                    props._set(k, newlist)
+                else:
+                    props._set(k, v)
+            else:
+                props._set(k, p.from_json(v))
+
+    # Return others as well
+    # others_dict = {k: v for k, v in iter(input_dict.items())
+    #                if k not in has_props_cls._props}
+    return props #, others_dict
 
 class RasterSetReader(object):
     """Read a series of raster files via their XML metadata file in ESPA schema"""

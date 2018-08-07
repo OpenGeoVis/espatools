@@ -4,13 +4,11 @@
 **/__pycache__/
 .ipynb_checkpoints/
 site/
-documentation/site/
 .coverage
 coverage.xml
 build/
 dist/
 espatools.egg-info/
 docs/build/
-docs/source/suites
-docs/source/pvmacros
+docs/source/pages
 docs/source/index.rst
