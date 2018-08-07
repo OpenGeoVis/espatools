@@ -47,7 +47,7 @@ plt.show()
 
 The above code results in an image like below:
 
-![aer.png]
+![aerosol](aer.png)
 
 
 ```py
@@ -62,4 +62,4 @@ plt.show()
 
 ```
 
-![RGB.png]
+![RGB](RGB.png)
