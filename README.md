@@ -1,6 +1,6 @@
 # ESPA Tools
 
-[![PyPI](https://img.shields.io/pypi/v/espatools.svg)](https://pypi.org/project/espatools/)
+[![PyPI](https://img.shields.io/pypi/v/espatools.svg)](https://pypi.org/project/espatools/) [![Build Status](https://travis-ci.org/OpenGeoVis/espatools.svg?branch=master)](https://travis-ci.org/OpenGeoVis/espatools)
 
 An open-source Python package for simple loading of Landsat imagery as NumPy arrays
 
