@@ -13,6 +13,10 @@ ESPA Tools
    :target: https://travis-ci.org/OpenGeoVis/espatools
    :alt: Build Status
 
+.. image:: https://img.shields.io/badge/docs%20by-gendocs-blue.svg
+   :target: https://gendocs.readthedocs.io/en/latest/?badge=latest)
+   :alt: Documentation Built by gendocs
+
 An open-source Python package for simple loading of Landsat imagery as NumPy arrays. `Learn more about the API`_. This website hosts the code documentation for the ``espatools`` python package found on `GitHub`_ and `PyPI`_. This website documents the code so that users
 have a convenient and familiar means of searching through the library to understand
 the backend of the features they are using.

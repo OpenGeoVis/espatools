@@ -1,6 +1,6 @@
 # ESPA Tools
 
-[![PyPI](https://img.shields.io/pypi/v/espatools.svg)](https://pypi.org/project/espatools/) [![Build Status](https://travis-ci.org/OpenGeoVis/espatools.svg?branch=master)](https://travis-ci.org/OpenGeoVis/espatools) [![Documentation Status](https://readthedocs.org/projects/espatools/badge/?version=latest)](https://espatools.readthedocs.io/en/latest/?badge=latest)
+[![PyPI](https://img.shields.io/pypi/v/espatools.svg)](https://pypi.org/project/espatools/) [![Build Status](https://travis-ci.org/OpenGeoVis/espatools.svg?branch=master)](https://travis-ci.org/OpenGeoVis/espatools) [![Documentation Status](https://readthedocs.org/projects/espatools/badge/?version=latest)](https://espatools.readthedocs.io/en/latest/?badge=latest) [![Documentation Built by gendocs](https://img.shields.io/badge/docs%20by-gendocs-blue.svg)](https://gendocs.readthedocs.io/en/latest/?badge=latest)
 
 An open-source Python package for simple loading of Landsat imagery as NumPy arrays. [Learn more about the API](https://espatools.readthedocs.io/en/latest/)
 
