@@ -1,10 +1,12 @@
 # ESPA Tools
 
+[![PyPI](https://img.shields.io/pypi/v/espatools.svg)](https://pypi.org/project/espatools/)
+
 An open-source Python package for simple loading of Landsat imagery as NumPy arrays
 
 ## Install
 
-`espatools` is available from [PyPI]():
+`espatools` is available from [PyPI](https://pypi.org/project/espatools/):
 
 ```bash
 $ pip install espatools
