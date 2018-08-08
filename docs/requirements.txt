@@ -1,4 +1,4 @@
-gendocs>=0.0.2
+gendocs>=0.1.0rc1
 Sphinx==1.7.5
 sphinx-autobuild==0.7.1
 sphinx-rtd-theme==0.4.0

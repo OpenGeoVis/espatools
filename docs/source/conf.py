@@ -20,7 +20,7 @@ sys.path.insert(0, os.path.abspath('../..'))
 import espatools
 # Automatically generate documentation pages
 from gendocs import Generator
-Generator.DocumentPackages(espatools, index_base='../index_base.rst')
+Generator().DocumentPackages(espatools, index_base='../index_base.rst')
 
 
 # -- Project information -----------------------------------------------------
