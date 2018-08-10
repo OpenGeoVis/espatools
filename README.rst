@@ -17,6 +17,10 @@ ESPA Tools
    :target: https://gendocs.readthedocs.io/en/latest/?badge=latest)
    :alt: Documentation Built by gendocs
 
+.. image :: https://img.shields.io/github/stars/OpenGeoVis/espatools.svg?style=social&label=Stars
+   :target: https://github.com/OpenGeoVis/espatools
+   :alt: GitHub
+
 An open-source Python package for simple loading of Landsat imagery as NumPy arrays.
 This website hosts the code documentation for the ``espatools`` python package found on `GitHub`_ and `PyPI`_. This website documents the code so that users
 have a convenient and familiar means of searching through the library to understand
@@ -48,6 +52,6 @@ Getting Started
 Usage
 ^^^^^
 
-We think `espatools` is easy to use; give it a try and let us know what you think as this is just the beta-release! See `this Jupyter Notebook`_ for a demonstration of some simple plotting after reading Landsat imagery.
+We think `espatools` is easy to use; give it a try and let us know what you think as this is just the alpha-release! See `this Jupyter Notebook`_ for a demonstration of some simple plotting after reading Landsat imagery.
 
 .. _this Jupyter Notebook: https://github.com/OpenGeoVis/espatools/blob/master/Example.ipynb

@@ -10,5 +10,5 @@ build/
 dist/
 espatools.egg-info/
 docs/build/
-docs/source/pages
+docs/source/content
 docs/source/index.rst

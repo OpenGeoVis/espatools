@@ -5,7 +5,7 @@ import setuptools
 
 __version__ = '0.0.3'
 
-with open("README.md", "r") as f:
+with open("README.rst", "r") as f:
     long_description = f.read()
 
 setuptools.setup(
@@ -15,7 +15,7 @@ setuptools.setup(
     author_email="info@pvgeo.org",
     description="Landsat raster file I/O",
     long_description=long_description,
-    long_description_content_type="text/markdown",
+    long_description_content_type="text/x-rst",
     url="https://github.com/OpenGeoVis/espatools",
     packages=setuptools.find_packages(),
     install_requires=[
