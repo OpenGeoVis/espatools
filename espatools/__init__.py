@@ -1,3 +1,6 @@
+"""``espatools``: An open-source Python package for simple loading of Landsat imagery as NumPy arrays.
+"""
+
 from .meta import *
 from .raster import *
 from .read import *
