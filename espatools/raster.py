@@ -35,7 +35,7 @@ class Band(properties.HasProperties):
     pixel_size = properties.Instance('The pixel size', PixelSize)
 
     # data information
-    fill_value = properties.Integer('fill value', required=False)
+    fill_value = properties.Integer('fill value', default=-9999)
     saturate_value = properties.Integer('Saturate value', required=False)
     add_offset = properties.Float('Add offset', required=False)
     data_units = properties.String('Data units', required=False)
@@ -52,10 +52,13 @@ class Band(properties.HasProperties):
         value_prop=properties.String('Bitmap value description')
         )
 
-    data = properties.Array(
-        'The band data as a 2D NumPy data',
-        shape=('*','*'),
-        )
+    # TODO: data validation causes a MAJOR slowdown. WAAAAYYY faster to not set
+    #       the data as a `properties` attribute.
+    # data = properties.Array(
+    #     'The band data as a 2D NumPy data',
+    #     shape=('*','*'),
+    #     )
+    data = None
 
 
 class RasterSet(properties.HasProperties):
@@ -77,32 +80,40 @@ class RasterSet(properties.HasProperties):
 
     nlines = properties.Integer('The number of lines')
     nsamps = properties.Integer('The number of samples')
+    pixel_size = properties.Instance('The pixel size', PixelSize)
 
 
     def GetRGB(self):
-        if np.max(self.rgb) > len(self.bands):
+        if 3 > len(self.bands):
+            print(self.rgb)
             raise RuntimeError('RGB bands are improperly defined.')
         color = [None, None, None]
         for name, band in self.bands.items():
             for i in range(3):
                 if 'band%d' % self.rgb[i] in name:
                     color[i] = band.data
+                    # TODO: check ValidRange
         for a in color:
             if isinstance(a, type(None)):
                 raise RuntimeError('RGB bands unavailable.')
         # now convert to 2D array of RGB tuples
         color = np.dstack(color)
+        color = np.array(color, dtype=np.float)
         color /= 2000.0 # TODO: check max valid range
         color *= (255.0/color.max())
-        return np.array(color, dtype=int) # TODO check type
+        return np.array(color, dtype=np.uint8)
 
 
     def validate(self):
         b = self.bands.get(list(self.bands.keys())[0])
         ny, nx = b.nlines, b.nsamps
+        dx, dy = b.pixel_size.x, b.pixel_size.y
         for name, band in self.bands.items():
             if band.nlines != ny or band.nsamps != nx:
                 raise RuntimeError('Band size mismatch.')
+            if band.pixel_size.x != dx or band.pixel_size.y != dy:
+                raise RuntimeError('Pixel size mismatch.')
         self.nlines = ny
         self.nsamps = nx
+        self.pixel_size = b.pixel_size
         return properties.HasProperties.validate(self)

@@ -2,7 +2,6 @@ __all__ = [
     'SetProperties',
     'RasterSetReader',
 ]
-
 import xmltodict
 import numpy as np
 from PIL import Image
@@ -54,6 +53,7 @@ class RasterSetReader(object):
 
     def __init__(self, **kwargs):
         self.filename = kwargs.get('filename', None)
+        self.bdict = dict()
 
     @staticmethod
     def ReadTif(tifFile):
@@ -75,7 +75,7 @@ class RasterSetReader(object):
         return d
 
 
-    def GenerateBand(self, band):
+    def GenerateBand(self, band, meta_only=False):
         """Genreate a Band object given band metadata
 
         Args:
@@ -85,9 +85,10 @@ class RasterSetReader(object):
             Band : the loaded Band onject"""
 
         # Read the band data and add it to dictionary
-        fname = band.get('file_name')
-        data = self.ReadTif('%s/%s' % (os.path.dirname(self.filename), fname))
-        band['data'] = data
+        if not meta_only:
+            fname = band.get('file_name')
+            data = self.ReadTif('%s/%s' % (os.path.dirname(self.filename), fname))
+            # band['data'] = data # TODO: data is not a properties object so do not set yet
 
         def FixBitmap(d):
             p = d.get('bitmap_description')
@@ -104,14 +105,22 @@ class RasterSetReader(object):
             return d
 
         band = SetProperties(Band, FixBitmap(self.CleanDict(band)))
-        print(band.name) # TODO: remove
-        band.validate()
+        if not meta_only:
+            data = np.ma.masked_where(data==band.fill_value, data)
+            band.data = data
+            # Mask the data arra using the fill_value
+
+        if not meta_only:
+            band.validate()
 
         return band
 
 
-    def Read(self):
+    def Read(self, meta_only=False, allowed=None):
         """Read the ESPA XML metadata file"""
+        if allowed is not None and not isinstance(allowed, (list, tuple)):
+            raise RuntimeError('`allowed` must be a list of str names.')
+
         meta = xmltodict.parse(
                 open(self.filename, 'r').read()
             ).get('espa_metadata')
@@ -122,15 +131,32 @@ class RasterSetReader(object):
 
         if not isinstance(bands, (list)):
             bands = [bands]
-        bdict = dict()
-        for i in range(len(bands)):
-            b = self.GenerateBand(bands[i])
-            bdict[b.name] = b
         meta = self.CleanDict(meta)
 
         # Get spatial refernce
         ras = SetProperties(RasterSet, meta)
-        ras.bands = bdict
-        ras.validate()
+
+        if allowed is not None:
+            # Remove non-allowed arrays from bdict
+            for k in self.bdict.keys():
+                if k not in allowed:
+                    del(self.bdict[k])
+
+        for i in range(len(bands)):
+            info = self.GenerateBand(bands[i], meta_only=True)
+            if allowed is not None and info.name not in allowed:
+                continue
+            if info.name not in self.bdict.keys() or self.bdict[info.name].data is None:
+                b = self.GenerateBand(bands[i], meta_only=meta_only)
+                self.bdict[b.name] = b
+        ras.bands = self.bdict
+
+        if not meta_only:
+            ras.validate()
 
         return ras
+
+
+
+    def SetFileName(self, filename):
+        self.filename = filename
