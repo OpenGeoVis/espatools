@@ -53,6 +53,7 @@ class RasterSetReader(object):
 
     def __init__(self, **kwargs):
         self.filename = kwargs.get('filename', None)
+        self.yflip = kwargs.get('yflip', False)
         self.bdict = dict()
 
     @staticmethod
@@ -112,8 +113,10 @@ class RasterSetReader(object):
                 data[data==band.fill_value] = np.nan
             else:
                 data = np.ma.masked_where(data==band.fill_value, data)
+            # Flip y axis if requested
+            if self.yflip:
+                data = np.flip(data, 0)
             band.data = data
-            # Mask the data array using the fill_value
 
         if not meta_only:
             band.validate()
