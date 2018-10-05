@@ -33,9 +33,12 @@ the backend of the features they are using.
 Connections
 -----------
 
-The package heavily uses `properties`_ for the creation of strongly typed objects in a consistent, declarative way.
+- The package heavily uses `properties`_ for the creation of strongly typed objects in a consistent, declarative way.
+- `PVGeo`_ has implemented an interface for ``espatools`` to read Landsat imagery via XML metadata files. Check out PVGeo's `Landsat Reader`_ for more details.
 
 .. _properties: http://propertiespy.readthedocs.io/en/latest/
+.. _PVGeo: http://pvgeo.org
+.. _Landsat Reader: http://docs.pvgeo.org/en/latest/content/PVGeo/grids/fileio.html#PVGeo.grids.fileio.LandsatReader
 
 Getting Started
 ---------------
