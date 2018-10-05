@@ -5,11 +5,11 @@ ESPA Tools
    :target: https://espatools.readthedocs.io/en/latest/?badge=latest
    :alt: Documentation Status
 
-.. image :: https://img.shields.io/pypi/v/espatools.svg
+.. image:: https://img.shields.io/pypi/v/espatools.svg
    :target: https://pypi.org/project/espatools/
    :alt: PyPI
 
-.. image :: https://travis-ci.org/OpenGeoVis/espatools.svg?branch=master
+.. image:: https://travis-ci.org/OpenGeoVis/espatools.svg?branch=master
    :target: https://travis-ci.org/OpenGeoVis/espatools
    :alt: Build Status
 
@@ -17,7 +17,7 @@ ESPA Tools
    :target: https://gendocs.readthedocs.io/en/latest/?badge=latest)
    :alt: Documentation Built by gendocs
 
-.. image :: https://img.shields.io/github/stars/OpenGeoVis/espatools.svg?style=social&label=Stars
+.. image:: https://img.shields.io/github/stars/OpenGeoVis/espatools.svg?style=social&label=Stars
    :target: https://github.com/OpenGeoVis/espatools
    :alt: GitHub
 
