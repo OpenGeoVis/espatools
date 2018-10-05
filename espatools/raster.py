@@ -91,7 +91,9 @@ class RasterSet(properties.HasProperties):
         for name, band in self.bands.items():
             for i in range(3):
                 if 'band%d' % self.rgb[i] in name:
-                    color[i] = band.data
+                    data = band.data.astype(np.int32)
+                    data = np.ma.masked_where(data==band.fill_value, data)
+                    color[i] = data
                     # TODO: check ValidRange
         for a in color:
             if isinstance(a, type(None)):

@@ -75,7 +75,7 @@ class RasterSetReader(object):
         return d
 
 
-    def GenerateBand(self, band, meta_only=False):
+    def GenerateBand(self, band, meta_only=False, cast=False):
         """Genreate a Band object given band metadata
 
         Args:
@@ -106,9 +106,14 @@ class RasterSetReader(object):
 
         band = SetProperties(Band, FixBitmap(self.CleanDict(band)))
         if not meta_only:
-            data = np.ma.masked_where(data==band.fill_value, data)
+            if cast:
+                # cast as floats and fill bad values with nans
+                data = data.astype(np.float32)
+                data[data==band.fill_value] = np.nan
+            else:
+                data = np.ma.masked_where(data==band.fill_value, data)
             band.data = data
-            # Mask the data arra using the fill_value
+            # Mask the data array using the fill_value
 
         if not meta_only:
             band.validate()
@@ -116,7 +121,7 @@ class RasterSetReader(object):
         return band
 
 
-    def Read(self, meta_only=False, allowed=None):
+    def Read(self, meta_only=False, allowed=None, cast=False):
         """Read the ESPA XML metadata file"""
         if allowed is not None and not isinstance(allowed, (list, tuple)):
             raise RuntimeError('`allowed` must be a list of str names.')
@@ -138,16 +143,22 @@ class RasterSetReader(object):
 
         if allowed is not None:
             # Remove non-allowed arrays from bdict
-            for k in self.bdict.keys():
+            for k in list(self.bdict.keys()):
                 if k not in allowed:
                     del(self.bdict[k])
 
         for i in range(len(bands)):
-            info = self.GenerateBand(bands[i], meta_only=True)
+            info = self.GenerateBand(bands[i], meta_only=True, cast=cast)
             if allowed is not None and info.name not in allowed:
                 continue
             if info.name not in self.bdict.keys() or self.bdict[info.name].data is None:
-                b = self.GenerateBand(bands[i], meta_only=meta_only)
+                b = self.GenerateBand(bands[i], meta_only=meta_only, cast=cast)
+                self.bdict[b.name] = b
+            elif cast and self.bdict[info.name].data.dtype != np.float32:
+                b = self.GenerateBand(bands[i], meta_only=meta_only, cast=cast)
+                self.bdict[b.name] = b
+            elif not cast and self.bdict[info.name].data.dtype == np.float32:
+                b = self.GenerateBand(bands[i], meta_only=meta_only, cast=cast)
                 self.bdict[b.name] = b
         ras.bands = self.bdict
 
