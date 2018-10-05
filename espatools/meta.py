@@ -1,3 +1,7 @@
+"""This module holds classes that contian the metadata information for a
+``raster`` data object.
+"""
+
 __all__ = [
     'Lum',
     'ThermalConst',

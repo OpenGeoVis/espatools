@@ -1,7 +1,10 @@
+"""This module holds the file I/O methods for rasters and bands."""
+
 __all__ = [
     'SetProperties',
     'RasterSetReader',
 ]
+
 import xmltodict
 import numpy as np
 from PIL import Image
