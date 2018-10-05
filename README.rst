@@ -55,6 +55,12 @@ Getting Started
 Usage
 ^^^^^
 
-We think `espatools` is easy to use; give it a try and let us know what you think as this is just the alpha-release! See `this Jupyter Notebook`_ for a demonstration of some simple plotting after reading Landsat imagery.
+We think `espatools` is easy to use; give it a try and let us know what you think as this is just the alpha-release!
+
+First, take a look at `this example`_ for `PVGeo`_ where ``espatools`` has an interface for direct use in ParaView.
+
+.. _this example: http://pvgeo.org/examples/grids/raster/
+
+Then checkout `this Jupyter Notebook`_ for a demonstration of some simple plotting after reading Landsat imagery in a Python environment.
 
 .. _this Jupyter Notebook: https://github.com/OpenGeoVis/espatools/blob/master/Example.ipynb
