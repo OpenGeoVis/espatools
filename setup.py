@@ -3,7 +3,7 @@
 
 import setuptools
 
-__version__ = '0.0.5'
+__version__ = '0.0.6'
 
 with open("README.rst", "r") as f:
     long_description = f.read()
