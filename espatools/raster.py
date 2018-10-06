@@ -1,5 +1,6 @@
 __all__ = [
     'Band',
+    'ColorSchemes',
     'RasterSet',
 ]
 
@@ -10,7 +11,7 @@ from .meta import *
 
 
 class Band(properties.HasProperties):
-    """An object to contain raster data for a single band"""
+    """Contains raster metadata and data for a single band."""
 
     # metadata attributes
     name = properties.String('Name of the band')
@@ -61,6 +62,44 @@ class Band(properties.HasProperties):
     data = None
 
 
+class ColorSchemes(object):
+    """A class to hold various RGB color schemes fo refernce. These color
+    schemes are defined on the `USGS website`_.
+
+    .. _USGS website: https://landsat.usgs.gov/how-do-landsat-8-band-combinations-differ-landsat-7-or-landsat-5-satellite-data
+    """
+
+    LOOKUP_TRUE_COLOR = dict(
+        LANDSAT_8=['sr_band4', 'sr_band3', 'sr_band2'],
+        LANDSAT_7=['sr_band3', 'sr_band2', 'sr_band1'],
+        LANDSAT_5=['sr_band3', 'sr_band2', 'sr_band1'],
+    )
+
+    LOOKUP_INFRARED = dict(
+        LANDSAT_8=['sr_band5', 'sr_band4', 'sr_band3'],
+        LANDSAT_7=['sr_band4', 'sr_band3', 'sr_band2'],
+        LANDSAT_5=['sr_band4', 'sr_band3', 'sr_band2'],
+    )
+
+    LOOKUP_FLASE_COLOR_A = dict(
+        LANDSAT_8=['sr_band6', 'sr_band5', 'sr_band4'],
+        LANDSAT_7=['sr_band5', 'sr_band4', 'sr_band3'],
+        LANDSAT_5=['sr_band5', 'sr_band4', 'sr_band3'],
+    )
+
+    LOOKUP_FLASE_COLOR_B = dict(
+        LANDSAT_8=['sr_band7', 'sr_band6', 'sr_band4'],
+        LANDSAT_7=['sr_band7', 'sr_band5', 'sr_band3'],
+        LANDSAT_5=['sr_band7', 'sr_band5', 'sr_band3'],
+    )
+
+    LOOKUP_FLASE_COLOR_C = dict(
+        LANDSAT_8=['sr_band7', 'sr_band5', 'sr_band3'],
+        LANDSAT_7=['sr_band7', 'sr_band4', 'sr_band2'],
+        LANDSAT_5=['sr_band7', 'sr_band4', 'sr_band2'],
+    )
+
+
 class RasterSet(properties.HasProperties):
 
     version = properties.String('version', required=False)
@@ -72,38 +111,45 @@ class RasterSet(properties.HasProperties):
                 key_prop=properties.String('Band name'),
                 value_prop=Band
                 )
-    rgb = properties.Array('The RGB band numbers',
-                default=[4, 3, 2],
-                shape=(3,),
-                dtype=int,
-                )
 
     nlines = properties.Integer('The number of lines')
     nsamps = properties.Integer('The number of samples')
     pixel_size = properties.Instance('The pixel size', PixelSize)
 
+    RGB_SCHEMES = dict(
+        true=ColorSchemes.LOOKUP_TRUE_COLOR,
+        infrared=ColorSchemes.LOOKUP_INFRARED,
+        false_a=ColorSchemes.LOOKUP_FLASE_COLOR_A,
+        false_b=ColorSchemes.LOOKUP_FLASE_COLOR_B,
+        false_c=ColorSchemes.LOOKUP_FLASE_COLOR_C,
+    )
 
-    def GetRGB(self):
-        if 3 > len(self.bands):
-            print(self.rgb)
-            raise RuntimeError('RGB bands are improperly defined.')
-        color = [None, None, None]
-        for name, band in self.bands.items():
-            for i in range(3):
-                if 'band%d' % self.rgb[i] in name:
-                    data = band.data.astype(np.int32)
-                    data = np.ma.masked_where(data==band.fill_value, data)
-                    color[i] = data
-                    # TODO: check ValidRange
-        for a in color:
-            if isinstance(a, type(None)):
-                raise RuntimeError('RGB bands unavailable.')
-        # now convert to 2D array of RGB tuples
-        color = np.dstack(color)
-        color = np.array(color, dtype=np.float)
-        color /= 2000.0 # TODO: check max valid range
-        color *= (255.0/color.max())
-        return np.array(color, dtype=np.uint8)
+
+    def GetRGB(self, scheme='infrared', names=None):
+        """Get an RGB color scheme based on predefined presets or specify your
+        own band names to use. A given set of names always overrides a scheme."""
+        if names is not None:
+            if not isinstance(names, (list, tuple)) or len(names) != 3:
+                raise RuntimeError('RGB band names improperly defined.')
+        else:
+            lookup = self.RGB_SCHEMES[scheme]
+            names = lookup[self.global_metadata.satellite]
+
+        # Now check that all bands are available:
+        for nm in names:
+            if nm not in self.bands.keys():
+                raise RuntimeError('Band (%s) unavailable.' % nm)
+
+        # Get the RGB bands
+        r = self.bands[names[0]].data
+        g = self.bands[names[1]].data
+        b = self.bands[names[2]].data
+        # Note that the bands dhould already be masked from read.
+        # If casted then there are np.nans present
+        r = ((r - np.nanmin(r)) * (1/(np.nanmax(r) - np.nanmin(r)) * 255)).astype('uint8')
+        g = ((g - np.nanmin(g)) * (1/(np.nanmax(g) - np.nanmin(g)) * 255)).astype('uint8')
+        b = ((b - np.nanmin(b)) * (1/(np.nanmax(b) - np.nanmin(b)) * 255)).astype('uint8')
+        return np.dstack([r, g, b])
 
 
     def validate(self):

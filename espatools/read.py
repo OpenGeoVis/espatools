@@ -113,9 +113,16 @@ class RasterSetReader(object):
             if cast:
                 # cast as floats and fill bad values with nans
                 data = data.astype(np.float32)
-                data[data==band.fill_value] = np.nan
+                data[data==band.fill_value] = -9999
+                if band.valid_range is not None:
+                    data[data<band.valid_range.min] = -9999
+                    data[data>band.valid_range.max] = -9999
+                data[data==-9999] = np.nan
             else:
                 data = np.ma.masked_where(data==band.fill_value, data)
+                if band.valid_range is not None:
+                    data = np.ma.masked_where(data<band.valid_range.min, data)
+                    data = np.ma.masked_where(data>band.valid_range.max, data)
             # Flip y axis if requested
             if self.yflip:
                 data = np.flip(data, 0)
