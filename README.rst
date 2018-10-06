@@ -64,3 +64,29 @@ We think `espatools` is easy to use; give it a try and let us know what you thin
 2. Then checkout `this Jupyter Notebook`_ for a demonstration of some simple plotting after reading Landsat imagery in a Python environment.
 
 .. _this Jupyter Notebook: https://github.com/OpenGeoVis/espatools/blob/master/Example.ipynb
+
+
+Example False Color
+^^^^^^^^^^^^^^^^^^^
+
+.. code-block:: python
+
+    import espatools
+    import matplotlib.pyplot as plt
+
+    # Create the reader to manage I/O
+    reader = espatools.RasterSetReader(filename='metadata.xml')
+    # Perform the read and yield a raster set
+    raster = reader.Read()
+    # Get an RGB color scheme
+    color = raster.GetRGB('false_a')
+
+    # Now plot the false color image
+    plt.imshow(color)
+
+
+The results of the above code yield the following false color image:
+
+
+.. image:: https://github.com/OpenGeoVis/espatools/raw/master/RGB.png
+   :alt: RGB False Color
