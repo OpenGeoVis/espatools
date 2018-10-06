@@ -22,11 +22,19 @@ ESPA Tools
    :alt: GitHub
 
 An open-source Python package for simple loading of Landsat imagery as NumPy arrays.
-This website hosts the code documentation for the ``espatools`` python package found on `GitHub`_ and `PyPI`_. This website documents the code so that users
-have a convenient and familiar means of searching through the library to understand
-the backend of the features they are using.
+When downloading Landsat imagery from `USGS Earth Explorer`_, the datasets contain
+many bands (``.tif`` files) and a few metadata files (``.txt`` and ``.xml`` files).
+``espatools`` is built to parse the ``.xml`` metadata file to read all of the bands
+for that dataset and provide a convenient and intuitive means of accessing that
+metadata along side the raw data in a Python environment.
+``espatools`` can be found on `GitHub`_ and `PyPI`_.
 
 
+.. image:: https://github.com/OpenGeoVis/espatools/raw/master/collage.png
+   :alt: Collage of RGB colors
+
+
+.. _USGS Earth Explorer: https://earthexplorer.usgs.gov
 .. _GitHub: https://github.com/OpenGeoVis/espatools/
 .. _PyPI: https://pypi.org/project/espatools/
 
