@@ -76,8 +76,10 @@ Example False Color
 
     # Create the reader to manage I/O
     reader = espatools.RasterSetReader(filename='metadata.xml')
+
     # Perform the read and yield a raster set
     raster = reader.Read()
+
     # Get an RGB color scheme
     color = raster.GetRGB('false_a')
 
