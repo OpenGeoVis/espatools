@@ -20,14 +20,16 @@ sys.path.insert(0, os.path.abspath('../..'))
 import espatools
 # Automatically generate documentation pages
 from gendocs import Generator
-Generator().DocumentPackages(espatools, index_base='../../README.rst')
+Generator().DocumentPackages(espatools, index_base='../../README.rst', notify=False)
 
 
 # -- Project information -----------------------------------------------------
 
 project = 'espatools'
-copyright = '2018, Bane Sullivan'
+copyright = u'2018, Bane Sullivan, http:://banesullivan.com'
 author = 'Bane Sullivan'
+html_show_copyright = False
+html_show_sphinx = False
 
 # The short X.Y version
 version = ''
