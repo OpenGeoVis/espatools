@@ -24,7 +24,7 @@ setuptools.setup(
         'pillow>=5.2.0',
         'xmltodict>=0.11.0',
         'vectormath>=0.2.0',
-        'properties>=0.5.2',
+        'properties>=0.4.0',
     ],
     classifiers=(
         "Programming Language :: Python",
