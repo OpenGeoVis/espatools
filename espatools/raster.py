@@ -183,3 +183,36 @@ class RasterSet(properties.HasProperties):
         self.nsamps = nx
         self.pixel_size = b.pixel_size
         return properties.HasProperties.validate(self)
+
+
+    def to_pyvista(self, z=0.0):
+        """Create a :class:`pyvista.UniformGrid` of this raster. Use the ``z``
+        argument to control the dataset's Z spatial reference.
+        """
+        try:
+            import pyvista as pv
+        except ImportError:
+            raise ImportError("Please install PyVista.")
+
+        # Build the spatial reference
+        output = pv.UniformGrid()
+        output.dimensions = self.nsamps, self.nlines, 1
+        output.spacing = self.pixel_size.x, self.pixel_size.y, 1
+        corner = self.global_metadata.projection_information.corner_point[0]
+        output.origin = corner.x, corner.y, z
+
+        # Add data arrays
+        clean = lambda arr: np.flip(arr, axis=0)
+        for name, band in self.bands.items():
+            output[name] = clean(band.data).ravel()
+        for scheme in list(self.RGB_SCHEMES.keys()):
+            output[scheme] = clean(self.get_rgb(scheme=scheme)).reshape((-1,3))
+        # Add an array for the mask
+        try:
+            mask = clean(~band.data.mask).ravel()
+            output["valid_mask"] = mask
+        except NameError:
+            pass
+
+        # Reutrn the dataset
+        return output
