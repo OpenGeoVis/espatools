@@ -1,7 +1,7 @@
 """This module holds the file I/O methods for rasters and bands."""
 
 __all__ = [
-    'SetProperties',
+    'set_properties',
     'RasterSetReader',
 ]
 
@@ -15,7 +15,7 @@ import properties
 from .raster import RasterSet, Band
 
 
-def SetProperties(has_props_cls, input_dict, include_immutable=True):
+def set_properties(has_props_cls, input_dict, include_immutable=True):
     """A helper method to set an ``HasProperties`` object's properties from a dictionary"""
     props = has_props_cls()
     if not isinstance(input_dict, (dict, collections.OrderedDict)):
@@ -28,9 +28,9 @@ def SetProperties(has_props_cls, input_dict, include_immutable=True):
            ):
             p = props._props.get(k)
             if isinstance(p, properties.HasProperties):
-                props._set(k, SetProperties(p, v, include_immutable=include_immutable))
+                props._set(k, set_properties(p, v, include_immutable=include_immutable))
             elif isinstance(p, properties.Instance):
-                props._set(k, SetProperties(p.instance_class, v, include_immutable=include_immutable))
+                props._set(k, set_properties(p.instance_class, v, include_immutable=include_immutable))
             elif isinstance(p, properties.List):
                 if not isinstance(v, list):
                     raise RuntimeError('property value mismatch', p, v)
@@ -38,7 +38,7 @@ def SetProperties(has_props_cls, input_dict, include_immutable=True):
                     prop = p.prop.instance_class
                     newlist = []
                     for i in v:
-                        value = SetProperties(prop, i, include_immutable=include_immutable)
+                        value = set_properties(prop, i, include_immutable=include_immutable)
                         newlist.append(value)
                     props._set(k, newlist)
                 else:
@@ -60,26 +60,26 @@ class RasterSetReader(object):
         self.bdict = dict()
 
     @staticmethod
-    def ReadTif(tifFile):
+    def read_tif(tifFile):
         """Reads a tif file to a 2D NumPy array"""
         img = Image.open(tifFile)
         img = np.array(img)
         return img
 
     @staticmethod
-    def CleanDict(d):
+    def clean_dict(d):
         d = {key.replace('@', '').replace('#', ''): item for key, item in d.items()}
         for key, item in d.items():
             if isinstance(item, (collections.OrderedDict, dict)):
-                d[key] = RasterSetReader.CleanDict(item)
+                d[key] = RasterSetReader.clean_dict(item)
             elif isinstance(item, list):
                 for i in range(len(item)):
                     if isinstance(item[i], (collections.OrderedDict, dict)):
-                        item[i] = RasterSetReader.CleanDict(item[i])
+                        item[i] = RasterSetReader.clean_dict(item[i])
         return d
 
 
-    def GenerateBand(self, band, meta_only=False, cast=False):
+    def generate_band(self, band, meta_only=False, cast=False):
         """Genreate a Band object given band metadata
 
         Args:
@@ -91,10 +91,10 @@ class RasterSetReader(object):
         # Read the band data and add it to dictionary
         if not meta_only:
             fname = band.get('file_name')
-            data = self.ReadTif('%s/%s' % (os.path.dirname(self.filename), fname))
+            data = self.read_tif('%s/%s' % (os.path.dirname(self.filename), fname))
             # band['data'] = data # TODO: data is not a properties object so do not set yet
 
-        def FixBitmap(d):
+        def fix_bitmap(d):
             p = d.get('bitmap_description')
             if p:
                 lis = p.get('bit')
@@ -108,7 +108,7 @@ class RasterSetReader(object):
                 d['bitmap_description'] = bm
             return d
 
-        band = SetProperties(Band, FixBitmap(self.CleanDict(band)))
+        band = set_properties(Band, fix_bitmap(self.clean_dict(band)))
         if not meta_only:
             if cast:
                 # cast as floats and fill bad values with nans
@@ -134,7 +134,7 @@ class RasterSetReader(object):
         return band
 
 
-    def Read(self, meta_only=False, allowed=None, cast=False):
+    def read(self, meta_only=False, allowed=None, cast=False):
         """Read the ESPA XML metadata file"""
         if allowed is not None and not isinstance(allowed, (list, tuple)):
             raise RuntimeError('`allowed` must be a list of str names.')
@@ -149,10 +149,10 @@ class RasterSetReader(object):
 
         if not isinstance(bands, (list)):
             bands = [bands]
-        meta = self.CleanDict(meta)
+        meta = self.clean_dict(meta)
 
         # Get spatial refernce
-        ras = SetProperties(RasterSet, meta)
+        ras = set_properties(RasterSet, meta)
 
         if allowed is not None:
             # Remove non-allowed arrays from bdict
@@ -161,17 +161,17 @@ class RasterSetReader(object):
                     del(self.bdict[k])
 
         for i in range(len(bands)):
-            info = self.GenerateBand(bands[i], meta_only=True, cast=cast)
+            info = self.generate_band(bands[i], meta_only=True, cast=cast)
             if allowed is not None and info.name not in allowed:
                 continue
             if info.name not in self.bdict.keys() or self.bdict[info.name].data is None:
-                b = self.GenerateBand(bands[i], meta_only=meta_only, cast=cast)
+                b = self.generate_band(bands[i], meta_only=meta_only, cast=cast)
                 self.bdict[b.name] = b
             elif cast and self.bdict[info.name].data.dtype != np.float32:
-                b = self.GenerateBand(bands[i], meta_only=meta_only, cast=cast)
+                b = self.generate_band(bands[i], meta_only=meta_only, cast=cast)
                 self.bdict[b.name] = b
             elif not cast and self.bdict[info.name].data.dtype == np.float32:
-                b = self.GenerateBand(bands[i], meta_only=meta_only, cast=cast)
+                b = self.generate_band(bands[i], meta_only=meta_only, cast=cast)
                 self.bdict[b.name] = b
         ras.bands = self.bdict
 
@@ -181,6 +181,11 @@ class RasterSetReader(object):
         return ras
 
 
+    def Read(self, *args, **kwargs):
+        return self.read(*args, **kwargs)
+
+    def set_file_name(self, filename):
+        self.filename = filename
 
     def SetFileName(self, filename):
-        self.filename = filename
+        return self.set_file_name(filename)

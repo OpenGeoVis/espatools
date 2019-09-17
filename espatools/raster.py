@@ -128,7 +128,7 @@ class RasterSet(properties.HasProperties):
     )
 
 
-    def GetRGB(self, scheme='infrared', names=None):
+    def get_rgb(self, scheme='infrared', names=None):
         """Get an RGB color scheme based on predefined presets or specify your
         own band names to use. A given set of names always overrides a scheme.
 
@@ -164,6 +164,10 @@ class RasterSet(properties.HasProperties):
         g = ((g - np.nanmin(g)) * (1/(np.nanmax(g) - np.nanmin(g)) * 255)).astype('uint8')
         b = ((b - np.nanmin(b)) * (1/(np.nanmax(b) - np.nanmin(b)) * 255)).astype('uint8')
         return np.dstack([r, g, b])
+
+
+    def GetRGB(self, *args, **kwargs):
+        return self.get_rgb(*args, **kwargs)
 
 
     def validate(self):
