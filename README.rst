@@ -86,10 +86,10 @@ Example False Color
     reader = espatools.RasterSetReader(filename='metadata.xml')
 
     # Perform the read and yield a raster set
-    raster = reader.Read()
+    raster = reader.read()
 
     # Get an RGB color scheme
-    color = raster.GetRGB('false_a')
+    color = raster.get_rgb('false_a')
 
     # Now plot the false color image
     plt.imshow(color)
