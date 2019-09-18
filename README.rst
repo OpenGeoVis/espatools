@@ -42,11 +42,13 @@ Connections
 -----------
 
 - The package heavily uses `properties`_ for the creation of strongly typed objects in a consistent, declarative way.
+- This package implements a way to convert these datasets to a `PyVista`_ dataset (``vtkImageData``).
 - `PVGeo`_ has implemented an interface for ``espatools`` to read Landsat imagery via XML metadata files. Check out PVGeo's `Landsat Reader`_ for more details.
 
 .. _properties: http://propertiespy.readthedocs.io/en/latest/
+.. _PyVista: http://docs.pyvista.org
 .. _PVGeo: http://pvgeo.org
-.. _Landsat Reader: http://pvgeo.org/examples/grids/raster/
+.. _Landsat Reader: https://pvgeo.org/content/PVGeo/grids/fileio.html#landsat-xml-reader
 
 Getting Started
 ---------------
@@ -65,13 +67,13 @@ Usage
 
 We think `espatools` is easy to use; give it a try and let us know what you think as this is just the alpha-release!
 
-1. First, take a look at `this example`_ for `PVGeo`_ where ``espatools`` has an interface for direct use in ParaView.
-
-.. _this example: http://pvgeo.org/examples/grids/raster/
-
-2. Then checkout `this Jupyter Notebook`_ for a demonstration of some simple plotting after reading Landsat imagery in a Python environment.
+1. First, checkout `this Jupyter Notebook`_ for a demonstration of some simple plotting after reading Landsat imagery in a Python environment.
 
 .. _this Jupyter Notebook: https://github.com/OpenGeoVis/espatools/blob/master/Example.ipynb
+
+2. And take a look at the ``.to_pyvista()`` method on ``RasterSet`` objects to have a 3D dataset of the imagery in PyVista/VTK
+
+3. Then take a look at the `Landsat Reader`_ in `PVGeo`_'s documentation where ``espatools`` has an interface for direct use in ParaView.
 
 
 Example False Color
@@ -100,3 +102,11 @@ The results of the above code yield the following false color image:
 
 .. image:: https://github.com/OpenGeoVis/espatools/raw/master/RGB.png
    :alt: RGB False Color
+
+
+You can also view the dataset in 3D using `PyVista`_:
+
+.. code-block:: python
+
+    mesh = raster.to_pyvista()
+    mesh.plot(scalars='false_a', rgb=True, cpos='xy')
