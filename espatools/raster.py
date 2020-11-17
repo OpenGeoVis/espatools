@@ -63,40 +63,45 @@ class Band(properties.HasProperties):
 
 
 class ColorSchemes(object):
-    """A class to hold various RGB color schemes fo refernce. These color
+    """A class to hold various RGB color schemes fo reference. These color
     schemes are defined on the `USGS website`_.
 
-    .. _USGS website: https://landsat.usgs.gov/how-do-landsat-8-band-combinations-differ-landsat-7-or-landsat-5-satellite-data
+    .. _USGS website: https://www.usgs.gov/faqs/what-are-band-designations-landsat-satellites?qt-news_science_products=0#qt-news_science_products
     """
 
     LOOKUP_TRUE_COLOR = dict(
         LANDSAT_8=['sr_band4', 'sr_band3', 'sr_band2'],
         LANDSAT_7=['sr_band3', 'sr_band2', 'sr_band1'],
         LANDSAT_5=['sr_band3', 'sr_band2', 'sr_band1'],
+        LANDSAT_4=['sr_band3', 'sr_band2', 'sr_band1'],
     )
 
     LOOKUP_INFRARED = dict(
         LANDSAT_8=['sr_band5', 'sr_band4', 'sr_band3'],
         LANDSAT_7=['sr_band4', 'sr_band3', 'sr_band2'],
         LANDSAT_5=['sr_band4', 'sr_band3', 'sr_band2'],
+        LANDSAT_4=['sr_band4', 'sr_band3', 'sr_band2'],
     )
 
-    LOOKUP_FLASE_COLOR_A = dict(
+    LOOKUP_FALSE_COLOR_A = dict(
         LANDSAT_8=['sr_band6', 'sr_band5', 'sr_band4'],
         LANDSAT_7=['sr_band5', 'sr_band4', 'sr_band3'],
         LANDSAT_5=['sr_band5', 'sr_band4', 'sr_band3'],
+        LANDSAT_4=['sr_band5', 'sr_band4', 'sr_band3'],
     )
 
-    LOOKUP_FLASE_COLOR_B = dict(
+    LOOKUP_FALSE_COLOR_B = dict(
         LANDSAT_8=['sr_band7', 'sr_band6', 'sr_band4'],
         LANDSAT_7=['sr_band7', 'sr_band5', 'sr_band3'],
         LANDSAT_5=['sr_band7', 'sr_band5', 'sr_band3'],
+        LANDSAT_4=['sr_band7', 'sr_band5', 'sr_band3'],
     )
 
-    LOOKUP_FLASE_COLOR_C = dict(
+    LOOKUP_FALSE_COLOR_C = dict(
         LANDSAT_8=['sr_band7', 'sr_band5', 'sr_band3'],
         LANDSAT_7=['sr_band7', 'sr_band4', 'sr_band2'],
         LANDSAT_5=['sr_band7', 'sr_band4', 'sr_band2'],
+        LANDSAT_4=['sr_band7', 'sr_band4', 'sr_band2'],
     )
 
 
@@ -122,9 +127,9 @@ class RasterSet(properties.HasProperties):
     RGB_SCHEMES = dict(
         true=ColorSchemes.LOOKUP_TRUE_COLOR,
         infrared=ColorSchemes.LOOKUP_INFRARED,
-        false_a=ColorSchemes.LOOKUP_FLASE_COLOR_A,
-        false_b=ColorSchemes.LOOKUP_FLASE_COLOR_B,
-        false_c=ColorSchemes.LOOKUP_FLASE_COLOR_C,
+        false_a=ColorSchemes.LOOKUP_FALSE_COLOR_A,
+        false_b=ColorSchemes.LOOKUP_FALSE_COLOR_B,
+        false_c=ColorSchemes.LOOKUP_FALSE_COLOR_C,
     )
 
 
@@ -158,7 +163,7 @@ class RasterSet(properties.HasProperties):
         r = self.bands[names[0]].data
         g = self.bands[names[1]].data
         b = self.bands[names[2]].data
-        # Note that the bands dhould already be masked from read.
+        # Note that the bands should already be masked from read.
         # If casted then there are np.nans present
         r = ((r - np.nanmin(r)) * (1/(np.nanmax(r) - np.nanmin(r)) * 255)).astype('uint8')
         g = ((g - np.nanmin(g)) * (1/(np.nanmax(g) - np.nanmin(g)) * 255)).astype('uint8')
@@ -214,5 +219,5 @@ class RasterSet(properties.HasProperties):
         except NameError:
             pass
 
-        # Reutrn the dataset
+        # Return the dataset
         return output
